@@ -27,7 +27,7 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-          npx react-scripts test --passWithNoTests --watchAll=false
+          npm run test --if-present
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -51,9 +51,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8C704B0E87BE4635A66F4BE156BA1F16 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7EF3AFA2AB1544FC958FD9C4033E33CA }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7C180734696F46E3BE0C03AA155E9B00 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_71AD8B956A454CAFB4551C92153A34CA }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C076C7530AB84118AF5B48182855E805 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2244BAED45204B77895A9281DF34B354 }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -62,7 +62,4 @@ jobs:
           app-name: 'shopping-app'
           slot-name: 'Production'
           package: .
-
           
-
-
