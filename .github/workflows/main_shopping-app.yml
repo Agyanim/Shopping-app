@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Node.js app to Azure Web App - shopping-app
+name: Build and deploy React app to Azure Web App - shopping-app
 
 on:
   push:
@@ -9,57 +6,56 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read #This is required for actions/checkout
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '24.x'
+          node-version: '20.x'
 
-      - name: npm install, build, and test
+      - name: Install dependencies and build
         run: |
           npm install
-          npm run build --if-present
-          npm run test --if-present
+          npm run build
 
-      - name: Upload artifact for deployment job
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
-          path: .
+          name: build-folder
+          path: build/
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: node-app
-      
+          name: build-folder
+          path: .
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8C704B0E87BE4635A66F4BE156BA1F16 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7EF3AFA2AB1544FC958FD9C4033E33CA }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7C180734696F46E3BE0C03AA155E9B00 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_71AD8B956A454CAFB4551C92153A34CA }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C076C7530AB84118AF5B48182855E805 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2244BAED45204B77895A9281DF34B354 }}
 
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
+      - name: Deploy build folder to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'shopping-app'
           slot-name: 'Production'
-          package: .
-          
+          package: build
