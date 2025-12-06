@@ -27,7 +27,7 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-          CI=false npm test --passWithNoTests
+          npx react-scripts test --passWithNoTests --watchAll=false
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -64,4 +64,5 @@ jobs:
           package: .
 
           
+
 
